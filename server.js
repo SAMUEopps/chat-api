@@ -24,6 +24,7 @@ io.on('connection', socket => {
   });
 
   socket.on('chat message', ({ sender, receiver, message }) => {
+    console.log(`Message from ${sender} to ${receiver}: ${message}`);
     io.emit('chat message', { sender, receiver, message });
   });
 });
