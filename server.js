@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
   });
 });
 
-app.post('/register', async (req, res) => {
+app.post('https://chat-api-7nm5.onrender.com/register', async (req, res) => {
   const { username, tag } = req.body;
   try {
     let user = await User.findOne({ username, tag });
@@ -91,7 +91,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.post('/login', async (req, res) => {
+app.post('https://chat-api-7nm5.onrender.com/login', async (req, res) => {
   const { username, tag } = req.body;
   const user = await User.findOne({ username, tag });
   if (user) {
