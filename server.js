@@ -1,25 +1,34 @@
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 
-const app = require('express')()
-const http = require('http').createServer(app)
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
+let users = [
+  { id: 1, name: 'User 1' },
+  { id: 2, name: 'User 2' },
+  { id: 3, name: 'User 3' },
+  { id: 4, name: 'User 4' },
+  { id: 5, name: 'User 5' }
+];
 
-app.get('/', (req, res) => {
-    res.send("Node Server is running. Yay!!")
-})
+io.on('connection', socket => {
+  console.log('A user connected');
 
-//Socket Logic
-const socketio = require('socket.io')(http)
+  socket.emit('users', users); // Send list of users to the client
 
-socketio.on("connection", (userSocket) => {
-    userSocket.on("send_message", (data) => {
-        userSocket.broadcast.emit("receive_message", data)
-    })
-})
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 
-//http.listen(process.env.PORT)
+  socket.on('chat message', ({ sender, receiver, message }) => {
+    io.emit('chat message', { sender, receiver, message });
+  });
+});
 
-// Specify and log the port directly
-const PORT = 3000; // You can replace 3000 with any port number you prefer
-http.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
